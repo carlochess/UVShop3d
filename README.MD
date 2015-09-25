@@ -8,8 +8,8 @@ mas pronto posible.
 
 Capturas
 --------------
-![Inicial](1.png "Vista1")
-![Voto](2.png "Vista2")
+![Inicial](1.PNG "Vista1")
+![Voto](2.PNG "Vista2")
 
 ## Servicios
 - Estado de central
