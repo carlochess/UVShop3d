@@ -1,0 +1,23 @@
+<!--http://jsfiddle.net/6enub6jq/1/-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Supermercado</title>
+    <LINK href="css/main.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <canvas id="renderCanvas"></canvas>
+	<img id="cerrar" src="http://www.balneariodeparacuellos.com/html/images/btn_cerrar.png"/>
+	<div id="msg">
+		<span id="imagen"></span>
+		<div id="nombre"></div>
+		<div id="descripcion"></div>
+		<div id="empresa_fab"></div>
+		<div id="iva"></div>
+	</div>
+ </body>
+ <script src="js/babylon.js"></script>
+ <script src="js/hand.minified-1.2.js"></script>
+ <script src="js/cannon.js"></script>
+ <script src="js/supermercado.js"></script>
+</html>

@@ -1,0 +1,94 @@
+function loadXMLDoc(c) {
+    var codigo = c.split("/")[1];
+    var xmlhttp;
+    if (window.XMLHttpRequest) {
+        xmlhttp = new XMLHttpRequest();
+    }
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            document.getElementById("msg").style.visibility = 'visible';
+            document.getElementById("cerrar").style.visibility = 'visible';
+            var info = JSON.parse(xmlhttp.responseText)[0];
+            document.getElementById("imagen").innerHTML = '<img src="http://uvshop.co/imagenes/' + info.id_prod + 'x200.jpg">';
+            document.getElementById("nombre").innerHTML = info.nombre;
+            document.getElementById("descripcion").innerHTML = info.descripcion;
+            document.getElementById("empresa_fab").innerHTML = info.empresa_fab;
+            document.getElementById("iva").innerHTML = info.iva;
+        }
+    }
+    xmlhttp.open("GET", "info.php?codigo=" + codigo, true);
+    xmlhttp.send();
+}
+document.getElementById("cerrar").onclick = function() {
+    document.getElementById("msg").style.visibility = 'hidden';
+    document.getElementById("cerrar").style.visibility = 'hidden';
+}
+document.getElementById("renderCanvas").onclick = function() {
+	//engine.isPointerLock = true;
+}
+
+if (BABYLON.Engine.isSupported()) {
+    var canvas = document.getElementById("renderCanvas");
+    var engine = new BABYLON.Engine(canvas, true);
+    var scene = new BABYLON.Scene(engine);
+
+    BABYLON.SceneLoader.Load("babylon/", "super.babylon", engine, function(newScene) {
+        scene = newScene;
+        scene.executeWhenReady(function() {
+        	//-----------------------------
+            // Camara
+            //-----------------------------	
+        	var myCam;
+            if (navigator.userAgent.toLowerCase().indexOf("android") > -1) {
+                myCam = new BABYLON.TouchCamera("TouchCamera", new BABYLON.Vector3(0, 4, -10), scene);
+            }else{
+            	myCam = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(0, 4, -10), scene);
+            }
+            myCam.ellipsoid = new BABYLON.Vector3(1, 1.5, 1);
+            myCam.keysUp.push(90); // Z
+            myCam.keysUp.push(87); // W
+            myCam.keysDown.push(83); // S
+            myCam.keysLeft.push(65); // A
+            myCam.keysLeft.push(81); // Q
+            myCam.keysRight.push(69); // E
+            myCam.keysRight.push(68); // D
+            myCam.checkCollisions = true;
+            myCam.applyGravity = true;
+            //myCam.attachControl(canvas);
+            scene.activeCamera = myCam;
+
+            var skybox = BABYLON.Mesh.CreateBox("skyBox", 60.0, scene);
+            var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
+            skyboxMaterial.backFaceCulling = false;
+            skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("assets/skybox/cubemap", scene); //skybox
+            skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+            skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+            skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+            skybox.material = skyboxMaterial;
+
+            var ground = BABYLON.Mesh.CreatePlane("ground", 60.0, scene);
+            var materialPlan = new BABYLON.StandardMaterial("texturePlane", scene);
+            materialPlan.diffuseTexture = new BABYLON.Texture("assets/baldosa.jpg", scene);
+            materialPlan.diffuseTexture.uScale = 5.0;
+            materialPlan.diffuseTexture.vScale = 5.0;
+            materialPlan.backFaceCulling = false;
+            ground.material = materialPlan;
+            ground.position = new BABYLON.Vector3(0, 0, 0);
+            ground.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
+            ground.checkCollisions = true;
+            poblar();
+            
+            scene.collisionsEnabled = true;
+            scene.gravity = new BABYLON.Vector3(0, -9.81, 0);
+
+            engine.runRenderLoop(function() {
+                scene.render();
+            });
+            window.addEventListener("resize", function() {
+                engine.resize();
+            });
+        });
+    }, function(progress) {
+
+    });
+}
